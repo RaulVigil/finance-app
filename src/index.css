@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  --font-font-custom: "Satoshi", "sans-serif";
+  --breakpoint-movil: 767px;
+  --breakpoint-tablet: 768px;
+  --color-redglobal: #F1230D;
+  --gradient-orange-yellow: linear-gradient(90deg, #F97400 4%, #FFD430 92%);
+  /* ... */
+}
+
+.slick-prev:before {
+  content: '←';
+  display: none !important;
+}
+.slick-next:before {
+  content: '→';
+  display: none;
+}
+.text-shadow-custom {
+  text-shadow: 1px 1px 2px #555, 2px 2px 4px #888 !important;
+}
+
+/*Estilos globales para docts de sliderComponent*/
+button.customGlobalPrevArrow.slick-arrow.slick-prev.slick-arrow.slick-prev {
+  position: absolute;
+  left: 15px;
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+  background: #ffffff61;
+  width: 40px;
+  height: 40px;
+  border-radius: 38px;
+  padding: 4px;
+}
+
+button.customNextArrowGlobal.slick-arrow.slick-next.slick-arrow.slick-next {
+  position: absolute;
+  right: 15px;
+  z-index: 10;
+
+  border: none;
+  cursor: pointer;
+  background: #ffffff61;
+  width: 40px;
+  height: 40px;
+  border-radius: 38px;
+  padding: 4px;
+}
+
+.slick-prev:hover,
+.slick-prev:focus,
+.slick-next:hover,
+.slick-next:focus {
+  color: transparent;
+  outline: none;
+  background: #3f3f3f;
+}
+
+.customArrowIcon {
+  font-size: 20px;
+  color: white;
+}
+
+
+
+
+.slick-slider.customBannerSlider>.slick-dots {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex !important
+;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background-color: #737373;
+  border-radius: 20px;
+  padding: 8px 15px;
+  width: fit-content;
+}
+.slick-slider.customBannerSlider>.slick-dots>li{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.customDotGlobal {
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Cambiar el dot activo */
+.slick-dots li.slick-active .customDotGlobal{
+  background-color: white;
+  transform: scale(1.5);
+  opacity: 1;
+}
+
+/*End Estilos globales para docts de sliderComponent*/
+
+
+/*estilos loader*/
+.loader.spinner {
+  border: 3px solid transparent;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
