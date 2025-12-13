@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { InputComponent } from "../../Components/InputComponent";
-import Logo from '../../assets/images/logo-login.png';
+import Logo from "../../assets/images/logo-login.png";
+import Api from "../../Services/api";
+import useAuthStore from "../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,39 +11,55 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const loginStore = useAuthStore((state) => state.login);
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!email.trim()) {
       newErrors.email = "El correo es requerido";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "Correo inválido";
     }
 
     if (!password.trim()) {
       newErrors.password = "La contraseña es requerida";
-    } else if (password.length < 6) {
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
     }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Login exitoso:", { email, password });
-      setEmail("");
-      setPassword("");
-      setErrors({});
-      alert("¡Inicio de sesión exitoso!");
-    } finally {
-      setIsLoading(false);
+  setIsLoading(true);
+
+  try {
+    const response = await Api.postJson("login", {
+      email,
+      password,
+    });
+
+    const data = response.data.data;
+
+    loginStore(data);
+
+    navigate("/"); // o /dashboard
+
+  } catch (error) {
+    if (error.response) {
+      setErrors({
+        password: error.response.data.message,
+      });
+    } else {
+      alert("Error de conexión");
     }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <main
@@ -69,9 +88,7 @@ export default function Login() {
             {/* Header */}
             <div className="text-center space-y-3">
               <div className="flex justify-center mb-4">
-                
-                  <img src={Logo} alt="" className="w-[30%]"/>
-                
+                <img src={Logo} alt="" className="w-[30%]" />
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
                 FinanceApp
@@ -166,7 +183,8 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center text-gray-500 text-xs sm:text-sm mt-6 flex items-center justify-center gap-1">
-          <i className="fas fa-shield-alt" />© 2025 FinanceApp. Maneja tus finanzas con seguridad :).
+          <i className="fas fa-shield-alt" />© 2025 FinanceApp. Maneja tus
+          finanzas con seguridad :).
         </div>
       </div>
     </main>

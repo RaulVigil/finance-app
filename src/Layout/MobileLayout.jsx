@@ -1,0 +1,38 @@
+import { Outlet } from "react-router-dom";
+import BottomNav from "../Components/BottomNav";
+import Logo from "../assets/images/logo-login.png";
+
+export default function MobileLayout() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#f6f7fb] via-[#f0ecff] to-[#f6f7fb] flex flex-col">
+      
+      {/* HEADER */}
+      <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <img
+              src={Logo}
+              alt="FinanceApp"
+              className="h-8 w-auto"
+            />
+            <span className="font-semibold text-gray-800 tracking-tight">
+              FinanceApp
+            </span>
+          </div>
+
+          <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 active:scale-95 transition">
+            {/* <i className="fas fa-bell"></i> */}
+          </button>
+        </div>
+      </header>
+
+      {/* CONTENT */}
+      <main className="flex-1 px-4 pt-4 pb-24 transition-all duration-300 ease-in-out">
+        <Outlet />
+      </main>
+
+      {/* BOTTOM NAV */}
+      <BottomNav />
+    </div>
+  );
+}

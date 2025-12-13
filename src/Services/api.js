@@ -1,6 +1,9 @@
 import axios from "axios";
-import { getSession } from "./AuthContext.jsx";
+import useAuthStore from "../store/useAuthStore.js";
 
+const getToken = () => {
+  return useAuthStore.getState().token;
+};
 
  const urlBase = import.meta.env.VITE_API_BASE_URL;
  //const urlBase = process.env.VITE_API_BASE_URL;
@@ -13,7 +16,7 @@ import { getSession } from "./AuthContext.jsx";
 
 
 
-const user = getSession();
+
 //console.log("User Session:", user);
 
 /**
@@ -25,9 +28,11 @@ const user = getSession();
 const readUrl = (url = "") => url.startsWith("http://") || url.startsWith("https://") ? url : `${urlBase}${url}`;
 
 const get = (url = "", params = {}, headers = {}) => {
-  if (getSession()) {
-    headers.Authorization = "Bearer " + getSession().token;
-  }
+ const token = getToken();
+if (token) {
+  headers.Authorization = "Bearer " + token;
+}
+
   return axios.get(readUrl(url), {
     params: { ...params },
      headers: {
@@ -47,9 +52,11 @@ const post = (url = "", body = {}, headers = {}) => {
   });
 
   // Set the Authorization header if a session exists
-  if (getSession()) {
-    headers.Authorization = "Bearer " + getSession().token;
-  }
+  const token = getToken();
+if (token) {
+  headers.Authorization = "Bearer " + token;
+}
+
 
   // Perform the POST request using axios
   return axios.post(readUrl(url), formData, {
@@ -61,9 +68,11 @@ const post = (url = "", body = {}, headers = {}) => {
   });
 };
 const postJson = (url = "", body = {}, headers = {}) => {
-  if (getSession()) {
-    headers.Authorization = "Bearer " + getSession().token;
-  }
+  const token = getToken();
+if (token) {
+  headers.Authorization = "Bearer " + token;
+}
+
 
   return axios.post(readUrl(url), JSON.stringify(body), {
     headers: {
@@ -75,9 +84,11 @@ const postJson = (url = "", body = {}, headers = {}) => {
 
 
 const postUpload = (url = "", body = {}, headers = {}) => {
-  if (getSession()) {
-    headers.Authorization = "Bearer " + getSession().token;
-  }
+  const token = getToken();
+if (token) {
+  headers.Authorization = "Bearer " + token;
+}
+
   return axios.post(readUrl(url), body, {
     headers: {
       Accept: "application/json",
