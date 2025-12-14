@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import useNewTransaction from "./useNewTransaction";
+import useNewDeuda from "./useNewDeuda";
 import TransactionCard from "../../Components/TransactionCard";
 import useCategorias from "./useCategorias";
 import useDeudas from "./useDeudas";
 import DropdownSelect from "../../Components/DropdownSelect";
 
 export default function NewTransaction() {
+  /** =========================
+   * TRANSACCIÓN
+   ========================= */
   const {
     tipo,
     setTipo,
@@ -25,11 +29,29 @@ export default function NewTransaction() {
   } = useNewTransaction();
 
   const { categorias, loading: categoriasLoading } = useCategorias();
-  const [openCategorias, setOpenCategorias] = useState(false);
   const { deudas, loading: deudasLoading } = useDeudas();
-  const [openDeudas, setOpenDeudas] = useState(false);
+
+  /** =========================
+   * DEUDA
+   ========================= */
+  const {
+    tipoDeuda,
+    setTipoDeuda,
+    nombre,
+    setNombre,
+    montoTotal,
+    setMontoTotal,
+    cuotaMensual,
+    setCuotaMensual,
+    fechaVencimiento,
+    setFechaVencimiento,
+    loading: deudaLoading,
+    message: deudaMessage,
+    submit: submitDeuda,
+  } = useNewDeuda();
 
   const [activeTab, setActiveTab] = useState("transaccion");
+
   const inputBase =
     "w-full rounded-lg border border-gray-200 px-4 py-2 " +
     "focus:outline-none focus:ring-2 focus:ring-[#2c295a]/30 transition";
@@ -50,7 +72,7 @@ export default function NewTransaction() {
     <div className="space-y-6">
       <h2 className="text-lg font-semibold text-gray-800">Nueva operación</h2>
 
-      {/*Tabs*/}
+      {/* ===== TABS PRINCIPALES ===== */}
       <div className="flex bg-gray-100 rounded-xl p-1">
         <button
           onClick={() => setActiveTab("transaccion")}
@@ -60,7 +82,7 @@ export default function NewTransaction() {
               : "text-gray-500"
           }`}
         >
-          Transacción
+          Nueva Transacción
         </button>
 
         <button
@@ -71,117 +93,105 @@ export default function NewTransaction() {
               : "text-gray-500"
           }`}
         >
-          Deuda
+          Nueva Deuda
         </button>
       </div>
 
-      {/* mensaje succes  */}
-      {message && (
-        <div
-          className={`text-sm px-4 py-2 rounded-lg ${
-            message.type === "success"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
-
+      {/* =============================
+          TAB TRANSACCIÓN 
+      ============================= */}
       {activeTab === "transaccion" && (
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+        <>
+          {message && (
+            <div
+              className={`text-sm px-4 py-2 rounded-lg ${
+                message.type === "success"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {message.text}
+            </div>
+          )}
 
-          <div className="flex gap-2">
-            {["Ingreso", "Egreso"].map((t) => (
-              <button
-                key={t}
-                onClick={() => {
-                  setTipo(t);
-                  if (t === "Ingreso") setEstado("pagado");
-                }}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                  tipo === t
-                    ? "bg-[#2c295a] text-white"
-                    : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* Monto */}
-          <input
-            type="number"
-            placeholder="Monto"
-            value={monto}
-            onChange={(e) => setMonto(e.target.value)}
-            className={inputBase}
-          />
-
-          {/* Categoría */}
-          <DropdownSelect
-            label=""
-            placeholder="Selecciona una categoría"
-            items={categorias}
-            value={categoriaId}
-            onChange={setCategoriaId}
-            loading={categoriasLoading}
-            getKey={(c) => c.categoria_id}
-            getLabel={(c) => c.nombre}
-          />
-
-          {/* Descripción */}
-          <input
-            type="text"
-            placeholder="Descripción"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            className={inputBase}
-          />
-
-          {/* Deuda (opcional) */}
-          <DropdownSelect
-            label=""
-            placeholder="Selecciona una deuda (opcional)"
-            items={deudasFiltradas}
-            value={deudaId}
-            onChange={setDeudaId}
-            loading={deudasLoading}
-            allowEmpty
-            emptyLabel="Sin deuda"
-            emptyText="No hay deudas disponibles"
-            getKey={(d) => d.deuda_id}
-            getLabel={(d) => d.nombre_deuda}
-          />
-
-          {/* Estado (solo egreso) */}
-          {!isIngreso && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
             <div className="flex gap-2">
-              {["pagado", "pendiente"].map((e) => (
+              {["Ingreso", "Egreso"].map((t) => (
                 <button
-                  key={e}
-                  onClick={() => setEstado(e)}
+                  key={t}
+                  onClick={() => {
+                    setTipo(t);
+                    if (t === "Ingreso") setEstado("pagado");
+                  }}
                   className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                    estado === e
-                      ? e === "pagado"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-500"
+                    tipo === t
+                      ? "bg-[#2c295a] text-white"
+                      : "bg-gray-100 text-gray-600"
                   }`}
                 >
-                  {e}
+                  {t}
                 </button>
               ))}
             </div>
-          )}
-        </div>
-      )}
 
-      {/* PREVIEW*/}
-      {activeTab === "transaccion" && (
-        <div>
-          <p className="text-sm text-gray-500 mb-2">Vista previa</p>
+            <input
+              type="number"
+              placeholder="Monto"
+              value={monto}
+              onChange={(e) => setMonto(e.target.value)}
+              className={inputBase}
+            />
+
+            <DropdownSelect
+              placeholder="Selecciona una categoría"
+              items={categorias}
+              value={categoriaId}
+              onChange={setCategoriaId}
+              loading={categoriasLoading}
+              getKey={(c) => c.categoria_id}
+              getLabel={(c) => c.nombre}
+            />
+
+            <input
+              type="text"
+              placeholder="Descripción"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              className={inputBase}
+            />
+
+            <DropdownSelect
+              placeholder="Selecciona una deuda (opcional)"
+              items={deudasFiltradas}
+              value={deudaId}
+              onChange={setDeudaId}
+              loading={deudasLoading}
+              allowEmpty
+              emptyLabel="Sin deuda"
+              getKey={(d) => d.deuda_id}
+              getLabel={(d) => d.nombre_deuda}
+            />
+
+            {!isIngreso && (
+              <div className="flex gap-2">
+                {["pagado", "pendiente"].map((e) => (
+                  <button
+                    key={e}
+                    onClick={() => setEstado(e)}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                      estado === e
+                        ? e === "pagado"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <TransactionCard
             tx={{
@@ -193,16 +203,95 @@ export default function NewTransaction() {
               estado,
             }}
           />
-        </div>
+
+          <button
+            onClick={submit}
+            disabled={loading}
+            className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
+          >
+            {loading ? "Guardando..." : "Guardar"}
+          </button>
+        </>
       )}
 
-      <button
-        onClick={submit}
-        disabled={loading}
-        className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a] active:scale-[0.98] transition disabled:opacity-60"
-      >
-        {loading ? "Guardando..." : "Guardar"}
-      </button>
+      {/* =============================
+          TAB DEUDA 
+      ============================= */}
+      {activeTab === "deuda" && (
+        <>
+          {deudaMessage && (
+            <div
+              className={`text-sm px-4 py-2 rounded-lg ${
+                deudaMessage.type === "success"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {deudaMessage.text}
+            </div>
+          )}
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+            <div className="flex gap-2">
+              {["Pagar", "Cobrar"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTipoDeuda(t)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                    tipoDeuda === t
+                      ? "bg-[#2c295a] text-white"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            <input
+              placeholder="Nombre de la deuda"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className={inputBase}
+            />
+
+            <input
+              type="number"
+              placeholder="Monto total"
+              value={montoTotal}
+              onChange={(e) => setMontoTotal(e.target.value)}
+              className={inputBase}
+            />
+
+            {tipoDeuda === "Pagar" && (
+              <input
+                type="number"
+                placeholder="Cuota mensual (opcional)"
+                value={cuotaMensual}
+                onChange={(e) => setCuotaMensual(e.target.value)}
+                className={inputBase}
+              />
+            )}
+
+            {tipoDeuda === "Pagar" && (
+              <input
+                type="date"
+                value={fechaVencimiento}
+                onChange={(e) => setFechaVencimiento(e.target.value)}
+                className={inputBase}
+              />
+            )}
+          </div>
+
+          <button
+            onClick={submitDeuda}
+            disabled={deudaLoading}
+            className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
+          >
+            {deudaLoading ? "Guardando..." : "Crear deuda"}
+          </button>
+        </>
+      )}
     </div>
   );
 }

@@ -6,20 +6,27 @@ export default function useTransacciones() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await Api.get("transacciones-todas");
-        setData(res.data);
-      } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTransacciones = async () => {
+    try {
+      setLoading(true);
+      const res = await Api.get("transacciones-todas");
+      setData(res.data);
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetch();
+  useEffect(() => {
+    fetchTransacciones();
   }, []);
 
-  return { data, loading, error };
+  return {
+    data,
+    loading,
+    error,
+    refetch: fetchTransacciones,
+  };
 }

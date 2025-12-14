@@ -19,53 +19,61 @@ export default function useNewDeuda() {
     setFechaVencimiento("");
   };
 
-  const submit = async () => {
-    setMessage(null);
+ const submit = async () => {
+  setMessage(null);
 
-    if (!nombre.trim()) {
-      return setMessage({
-        type: "error",
-        text: "El nombre de la deuda es obligatorio",
-      });
-    }
+  if (!nombre.trim()) {
+    return setMessage({
+      type: "error",
+      text: "El nombre de la deuda es obligatorio",
+    });
+  }
 
-    if (!montoTotal || Number(montoTotal) <= 0) {
-      return setMessage({
-        type: "error",
-        text: "Monto total inválido",
-      });
-    }
+  if (!montoTotal || Number(montoTotal) <= 0) {
+    return setMessage({
+      type: "error",
+      text: "Monto total inválido",
+    });
+  }
 
-    const payload = {
-      nombre_deuda: nombre,
-      tipo_deuda: tipoDeuda,
-      monto_total_inicial: Number(montoTotal),
-      cuota_mensual: cuotaMensual ? Number(cuotaMensual) : null,
-      fecha_vencimiento: fechaVencimiento || null,
-    };
-
-    try {
-      setLoading(true);
-
-      const res = await Api.postJson("deudas-crear", payload);
-
-      setMessage({
-        type: "success",
-        text: res?.data?.message || "Deuda creada correctamente",
-      });
-
-      resetForm();
-    } catch (err) {
-      setMessage({
-        type: "error",
-        text:
-          err?.response?.data?.message ||
-          "Error al crear la deuda",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const payload = {
+    nombre_deuda: nombre,
+    tipo_deuda: tipoDeuda,
+    monto_total_inicial: Number(montoTotal),
   };
+
+  // 👉 SOLO si es deuda a pagar
+  if (tipoDeuda === "Pagar") {
+    payload.cuota_mensual = cuotaMensual
+      ? Number(cuotaMensual)
+      : null;
+
+    payload.fecha_vencimiento = fechaVencimiento || null;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await Api.postJson("deudas-crear", payload);
+
+    setMessage({
+      type: "success",
+      text: res?.data?.message || "Deuda creada correctamente",
+    });
+
+    resetForm();
+  } catch (err) {
+    setMessage({
+      type: "error",
+      text:
+        err?.response?.data?.message ||
+        "Error al crear la deuda",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return {
     // form

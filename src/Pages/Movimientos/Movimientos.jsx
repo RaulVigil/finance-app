@@ -3,7 +3,7 @@ import useTransacciones from "./useTransacciones";
 import TransactionCard from "../../Components/TransactionCard";
 
 export default function Movimientos() {
-  const { data, loading, error } = useTransacciones();
+  const { data, loading, error, refetch } = useTransacciones();
   const [activeTab, setActiveTab] = useState("ingresos");
 
   if (loading) {
@@ -73,6 +73,8 @@ export default function Movimientos() {
             <TransactionCard
               key={tx.transaccion_id}
               tx={tx}
+              onPaid={refetch}
+
             />
           ))}
       </div>

@@ -6,7 +6,7 @@ import SummaryCard from "../../Components/SummaryCard";
 
 export default function Dashboard() {
   const { saldoActual } = useAuthStore();
-  const { data, loading, error } = useMesActual();
+  const { data, loading, error, refetch } = useMesActual();
   const [activeTab, setActiveTab] = useState("ingresos");
 
   if (loading) {
@@ -95,7 +95,7 @@ export default function Dashboard() {
           {transaccionesMostradas
             .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
             .map((tx) => (
-              <TransactionCard key={tx.transaccion_id} tx={tx} />
+              <TransactionCard key={tx.transaccion_id} tx={tx}  onPaid={refetch}/>
             ))}
         </div>
       </div>
