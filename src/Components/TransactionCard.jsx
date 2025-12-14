@@ -1,3 +1,4 @@
+
 export default function TransactionCard({ tx }) {
   const isIngreso = tx.tipo === "Ingreso";
 

@@ -27,7 +27,8 @@ export default function MobileLayout() {
       </header>
 
       {/* CONTENT */}
-      <main className="flex-1 px-4 pt-4 pb-24 transition-all duration-300 ease-in-out">
+      <main className="flex-1 px-4 pt-4 pb-32 transition-all duration-300 ease-in-out">
+
         <Outlet />
       </main>
 

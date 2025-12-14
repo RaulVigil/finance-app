@@ -1,16 +1,208 @@
+import { useState, useEffect } from "react";
+import useNewTransaction from "./useNewTransaction";
+import TransactionCard from "../../Components/TransactionCard";
+import useCategorias from "./useCategorias";
+import useDeudas from "./useDeudas";
+import DropdownSelect from "../../Components/DropdownSelect";
+
 export default function NewTransaction() {
+  const {
+    tipo,
+    setTipo,
+    monto,
+    setMonto,
+    categoriaId,
+    setCategoriaId,
+    estado,
+    setEstado,
+    descripcion,
+    setDescripcion,
+    deudaId,
+    setDeudaId,
+    loading,
+    message,
+    submit,
+  } = useNewTransaction();
+
+  const { categorias, loading: categoriasLoading } = useCategorias();
+  const [openCategorias, setOpenCategorias] = useState(false);
+  const { deudas, loading: deudasLoading } = useDeudas();
+  const [openDeudas, setOpenDeudas] = useState(false);
+
+  const [activeTab, setActiveTab] = useState("transaccion");
+  const inputBase =
+    "w-full rounded-lg border border-gray-200 px-4 py-2 " +
+    "focus:outline-none focus:ring-2 focus:ring-[#2c295a]/30 transition";
+
+  const isIngreso = tipo === "Ingreso";
+
+  const deudasFiltradas = deudas.filter((d) => {
+    if (tipo === "Ingreso") return d.tipo_deuda === "Cobrar";
+    if (tipo === "Egreso") return d.tipo_deuda === "Pagar";
+    return false;
+  });
+
+  useEffect(() => {
+    setDeudaId("");
+  }, [tipo]);
+
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-gray-800">
-        Nueva transacción
-      </h1>
+      <h2 className="text-lg font-semibold text-gray-800">Nueva operación</h2>
 
-      {/* Aquí irá el formulario */}
-      <div className="bg-white rounded-2xl p-5 shadow">
-        <p className="text-gray-500 text-sm">
-          Formulario de creación de transacción
-        </p>
+      {/*Tabs*/}
+      <div className="flex bg-gray-100 rounded-xl p-1">
+        <button
+          onClick={() => setActiveTab("transaccion")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
+            activeTab === "transaccion"
+              ? "bg-white shadow text-[#2c295a]"
+              : "text-gray-500"
+          }`}
+        >
+          Transacción
+        </button>
+
+        <button
+          onClick={() => setActiveTab("deuda")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
+            activeTab === "deuda"
+              ? "bg-white shadow text-[#2c295a]"
+              : "text-gray-500"
+          }`}
+        >
+          Deuda
+        </button>
       </div>
+
+      {/* mensaje succes  */}
+      {message && (
+        <div
+          className={`text-sm px-4 py-2 rounded-lg ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      {activeTab === "transaccion" && (
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+
+          <div className="flex gap-2">
+            {["Ingreso", "Egreso"].map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  setTipo(t);
+                  if (t === "Ingreso") setEstado("pagado");
+                }}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                  tipo === t
+                    ? "bg-[#2c295a] text-white"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {/* Monto */}
+          <input
+            type="number"
+            placeholder="Monto"
+            value={monto}
+            onChange={(e) => setMonto(e.target.value)}
+            className={inputBase}
+          />
+
+          {/* Categoría */}
+          <DropdownSelect
+            label=""
+            placeholder="Selecciona una categoría"
+            items={categorias}
+            value={categoriaId}
+            onChange={setCategoriaId}
+            loading={categoriasLoading}
+            getKey={(c) => c.categoria_id}
+            getLabel={(c) => c.nombre}
+          />
+
+          {/* Descripción */}
+          <input
+            type="text"
+            placeholder="Descripción"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            className={inputBase}
+          />
+
+          {/* Deuda (opcional) */}
+          <DropdownSelect
+            label=""
+            placeholder="Selecciona una deuda (opcional)"
+            items={deudasFiltradas}
+            value={deudaId}
+            onChange={setDeudaId}
+            loading={deudasLoading}
+            allowEmpty
+            emptyLabel="Sin deuda"
+            emptyText="No hay deudas disponibles"
+            getKey={(d) => d.deuda_id}
+            getLabel={(d) => d.nombre_deuda}
+          />
+
+          {/* Estado (solo egreso) */}
+          {!isIngreso && (
+            <div className="flex gap-2">
+              {["pagado", "pendiente"].map((e) => (
+                <button
+                  key={e}
+                  onClick={() => setEstado(e)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                    estado === e
+                      ? e === "pagado"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PREVIEW*/}
+      {activeTab === "transaccion" && (
+        <div>
+          <p className="text-sm text-gray-500 mb-2">Vista previa</p>
+
+          <TransactionCard
+            tx={{
+              descripcion: descripcion || "Descripción",
+              categoria: "Categoría",
+              fecha: new Date().toISOString().slice(0, 10),
+              tipo,
+              monto: monto || 0,
+              estado,
+            }}
+          />
+        </div>
+      )}
+
+      <button
+        onClick={submit}
+        disabled={loading}
+        className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a] active:scale-[0.98] transition disabled:opacity-60"
+      >
+        {loading ? "Guardando..." : "Guardar"}
+      </button>
     </div>
   );
 }

@@ -45,7 +45,7 @@ const handleSubmit = async (e) => {
 
     loginStore(data);
 
-    navigate("/"); // o /dashboard
+    navigate("app"); // o /dashboard
 
   } catch (error) {
     if (error.response) {
