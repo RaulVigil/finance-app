@@ -7,12 +7,14 @@ import Movimientos from "../Pages/Movimientos/Movimientos";
 import Deudas from "../Pages/Deudas/Deudas";
 import Perfil from "../Pages/Perfil/Perfil";
 import NewTransaction from "../Pages/Transactions/NewTransaction";
+import Registro from "../Pages/Registro/Registro";
 
 const AppRouter = () => {
   return (
     <Routes>
       {/* LOGIN */}
       <Route path="/" element={<Login />} />
+      <Route path="/registro" element={<Registro />} />
 
       {/* APP CON MENU INFERIOR */}
       <Route path="/app" element={<MobileLayout />}>

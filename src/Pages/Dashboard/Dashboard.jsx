@@ -71,7 +71,7 @@ export default function Dashboard() {
             onClick={() => setActiveTab("ingresos")}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
               activeTab === "ingresos"
-                ? "bg-white shadow text-[#2c295a]"
+                ? "bg-[#2c295a] shadow text-white"
                 : "text-gray-500"
             }`}
           >
@@ -82,7 +82,7 @@ export default function Dashboard() {
             onClick={() => setActiveTab("egresos")}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
               activeTab === "egresos"
-                ? "bg-white shadow text-[#2c295a]"
+                ? "bg-[#2c295a] shadow text-white"
                 : "text-gray-500"
             }`}
           >

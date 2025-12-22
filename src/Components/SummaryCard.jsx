@@ -10,7 +10,7 @@ export default function SummaryCard({
     <div className="
       bg-white
       rounded-2xl
-      p-5
+      p-[12px]
       shadow-sm
       border border-gray-100
       transition-all
@@ -35,7 +35,7 @@ export default function SummaryCard({
         {/* Icono (branding) */}
         <div
           className={`
-            w-11 h-11
+            w-[30px] h-[40px]
             flex items-center justify-center
             rounded-xl
             bg-[#eceaff]
@@ -43,7 +43,7 @@ export default function SummaryCard({
             ring-1 ring-[#6b5cff]/20
           `}
         >
-          <i className={`${icon} text-lg`} />
+          <i className={`${icon} text-[12px]`} />
         </div>
       </div>
     </div>

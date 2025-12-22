@@ -1,5 +1,15 @@
 import usePagarTransaccion from "../hooks/usePagarTransaccion";
 
+const formatFecha = (fecha) => {
+  if (!fecha) return "";
+
+  return new Date(fecha).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
+
 export default function TransactionCard({ tx, onPaid }) {
   const isIngreso = tx.tipo === "Ingreso";
   const { pagar, loading } = usePagarTransaccion();
@@ -16,7 +26,8 @@ export default function TransactionCard({ tx, onPaid }) {
       <div>
         <p className="font-medium text-gray-900">{tx.descripcion}</p>
         <p className="text-xs text-gray-500">
-          {tx.categoria} · {tx.fecha}
+          {/* {tx.categoria} ·  */}
+          {formatFecha(tx.fecha)}
         </p>
       </div>
 

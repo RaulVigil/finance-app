@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { InputComponent } from "../../Components/InputComponent";
 import Logo from "../../assets/images/logo-login.png";
 import Api from "../../Services/api";
 import useAuthStore from "../../store/useAuthStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,6 +12,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const loginStore = useAuthStore((state) => state.login);
+  const [rememberMe, setRememberMe] = useState(false);
+
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -29,37 +31,43 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    const response = await Api.postJson("login", {
-      email,
-      password,
-    });
+    try {
+      const response = await Api.postJson("login", { email, password });
+      const data = response.data.data;
 
-    const data = response.data.data;
+      if (rememberMe) {
+        localStorage.setItem("financeapp-remember-email", email);
+      } else {
+        localStorage.removeItem("financeapp-remember-email");
+      }
 
-    loginStore(data);
-
-    navigate("app"); // o /dashboard
-
-  } catch (error) {
-    if (error.response) {
-      setErrors({
-        password: error.response.data.message,
-      });
-    } else {
-      alert("Error de conexión");
+      loginStore(data);
+      navigate("/app");
+    } catch (error) {
+      if (error.response) {
+        setErrors({ password: error.response.data.message });
+      } else {
+        alert("Error de conexión");
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("financeapp-remember-email");
+
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   return (
     <main
@@ -69,7 +77,7 @@ const handleSubmit = async (e) => {
           "linear-gradient(135deg, #fafaff 0%, #e4d9ff 50%, #fafaff 100%)",
       }}
     >
-      {/* Decorativas */}
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute top-0 right-0 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
@@ -81,11 +89,10 @@ const handleSubmit = async (e) => {
         />
       </div>
 
-      {/* Contenedor del formulario */}
       <div className="relative z-10 w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10 border border-gray-100 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Header */}
+
             <div className="text-center space-y-3">
               <div className="flex justify-center mb-4">
                 <img src={Logo} alt="" className="w-[30%]" />
@@ -98,7 +105,7 @@ const handleSubmit = async (e) => {
               </p>
             </div>
 
-            {/* Inputs */}
+
             <div className="space-y-4">
               <InputComponent
                 type="email"
@@ -122,7 +129,6 @@ const handleSubmit = async (e) => {
               />
             </div>
 
-            {/* Botón Submit */}
             <button
               type="submit"
               disabled={isLoading}
@@ -152,30 +158,33 @@ const handleSubmit = async (e) => {
               <label className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors">
                 <input
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded cursor-pointer"
                   style={{ accentColor: "#273469" }}
                 />
                 <span className="text-gray-600">Recuérdame</span>
               </label>
-              <a
+
+              {/* <a
                 href="#"
                 className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 <i className="fas fa-question-circle text-xs" />
                 ¿Olvidaste tu contraseña?
-              </a>
+              </a> */}
             </div>
 
             {/* Sign Up */}
             <div className="text-center pt-4 border-t border-gray-200">
               <p className="text-gray-600 text-xs sm:text-sm">
                 ¿No tienes cuenta?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/registro"
                   className="text-blue-600 hover:text-blue-700 font-medium"
                 >
                   Regístrate aquí
-                </a>
+                </Link>
               </p>
             </div>
           </form>

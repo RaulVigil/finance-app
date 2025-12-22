@@ -22,7 +22,7 @@ export default function Deudas() {
           onClick={() => setTab("pagar")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
             tab === "pagar"
-              ? "bg-white shadow text-[#2c295a]"
+              ? "bg-[#2c295a] shadow text-white"
               : "text-gray-500"
           }`}
         >
@@ -33,7 +33,7 @@ export default function Deudas() {
           onClick={() => setTab("cobrar")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
             tab === "cobrar"
-              ? "bg-white shadow text-[#2c295a]"
+              ? "bg-[#2c295a] shadow text-white"
               : "text-gray-500"
           }`}
         >
