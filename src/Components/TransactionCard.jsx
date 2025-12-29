@@ -3,12 +3,21 @@ import usePagarTransaccion from "../hooks/usePagarTransaccion";
 const formatFecha = (fecha) => {
   if (!fecha) return "";
 
-  return new Date(fecha).toLocaleDateString("es-ES", {
+  const [year, month, day] = fecha.split("-");
+
+  const localDate = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day)
+  );
+
+  return localDate.toLocaleDateString("es-ES", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 };
+
 
 export default function TransactionCard({ tx, onPaid }) {
   const isIngreso = tx.tipo === "Ingreso";
