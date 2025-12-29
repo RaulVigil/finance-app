@@ -20,5 +20,42 @@ export default function useDeudasDetalle() {
     fetch();
   }, []);
 
-  return { ...data, loading };
+  // ===== TOTALES =====
+  const totalPagarInicial = data.pagar.reduce(
+    (acc, d) => acc + Number(d.monto_total_inicial || 0),
+    0
+  );
+
+  const totalPagarPendiente = data.pagar.reduce(
+    (acc, d) => acc + Number(d.saldo_pendiente || 0),
+    0
+  );
+
+  const totalCobrarInicial = data.cobrar.reduce(
+    (acc, d) => acc + Number(d.monto_total_inicial || 0),
+    0
+  );
+
+  const totalCobrarPendiente = data.cobrar.reduce(
+    (acc, d) => acc + Number(d.saldo_pendiente || 0),
+    0
+  );
+
+  return {
+    cobrar: data.cobrar,
+    pagar: data.pagar,
+    loading,
+    totales: {
+      pagar: {
+        inicial: totalPagarInicial,
+        pendiente: totalPagarPendiente,
+        pagado: totalPagarInicial - totalPagarPendiente,
+      },
+      cobrar: {
+        inicial: totalCobrarInicial,
+        pendiente: totalCobrarPendiente,
+        recibido: totalCobrarInicial - totalCobrarPendiente,
+      },
+    },
+  };
 }

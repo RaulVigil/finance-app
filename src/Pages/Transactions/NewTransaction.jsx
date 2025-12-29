@@ -7,7 +7,14 @@ import useDeudas from "./useDeudas";
 import DropdownSelect from "../../Components/DropdownSelect";
 
 export default function NewTransaction() {
-  /** =========================
+  /* =========================
+   * WIZARD
+   ========================= */
+  const [step, setStep] = useState(1);
+  const [accion, setAccion] = useState(null);
+  // "ingreso" | "egreso" | "deuda"
+
+  /* =========================
    * TRANSACCIÓN
    ========================= */
   const {
@@ -30,8 +37,9 @@ export default function NewTransaction() {
 
   const { categorias, loading: categoriasLoading } = useCategorias();
   const { deudas, loading: deudasLoading } = useDeudas();
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  /** =========================
+  /* =========================
    * DEUDA
    ========================= */
   const {
@@ -50,7 +58,33 @@ export default function NewTransaction() {
     submit: submitDeuda,
   } = useNewDeuda();
 
-  const [activeTab, setActiveTab] = useState("transaccion");
+  useEffect(() => {
+    if (message?.type === "success") {
+      setSuccessMessage(message.text);
+
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+        setStep(1);
+        setAccion(null);
+      }, 1800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (deudaMessage?.type === "success") {
+      setSuccessMessage(deudaMessage.text);
+
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+        setStep(1);
+        setAccion(null);
+      }, 1800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [deudaMessage]);
 
   const inputBase =
     "w-full rounded-lg border border-gray-200 px-4 py-2 " +
@@ -68,100 +102,200 @@ export default function NewTransaction() {
     setDeudaId("");
   }, [tipo]);
 
-  return (
-    <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-800">Nueva operación</h2>
+  /* =========================
+   * STEP 1 – SELECCIÓN
+   ========================= */
+  if (step === 1) {
+    return (
+      <div className="space-y-6">
+        {successMessage && (
+          <div className="bg-green-100 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">
+            ✔ {successMessage}
+          </div>
+        )}
 
-      {/* ===== TABS PRINCIPALES ===== */}
-      <div className="flex bg-gray-100 rounded-xl p-1">
-        <button
-          onClick={() => setActiveTab("transaccion")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-            activeTab === "transaccion"
-              ? "bg-white shadow text-[#2c295a]"
-              : "text-gray-500"
-          }`}
-        >
-          Nueva Transacción
-        </button>
+        <h2 className="text-lg font-semibold text-gray-800">
+          ¿Qué deseas registrar?
+        </h2>
 
-        <button
-          onClick={() => setActiveTab("deuda")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-            activeTab === "deuda"
-              ? "bg-white shadow text-[#2c295a]"
-              : "text-gray-500"
-          }`}
-        >
-          Nueva Deuda
-        </button>
-      </div>
+        <div className="space-y-3">
+          {/* GASTO */}
+          <button
+            onClick={() => {
+              setAccion("egreso");
+              setTipo("Egreso");
+              setEstado("pagado");
+              setStep(2);
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-red-100 text-red-600">
+                <i className="fas fa-arrow-up"></i>
+              </div>
 
-      {/* =============================
-          TAB TRANSACCIÓN 
-      ============================= */}
-      {activeTab === "transaccion" && (
-        <>
-          {message && (
-            <div
-              className={`text-sm px-4 py-2 rounded-lg ${
-                message.type === "success"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {message.text}
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Registrar gasto</p>
+                <p className="text-xs text-gray-500">
+                  Dinero que sale de tu cuenta
+                </p>
+              </div>
             </div>
-          )}
 
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+            <i className="fas fa-chevron-right text-gray-400"></i>
+          </button>
+
+          {/* INGRESO */}
+          <button
+            onClick={() => {
+              setAccion("ingreso");
+              setTipo("Ingreso");
+              setEstado("pagado");
+              setStep(2);
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-green-100 text-green-600">
+                <i className="fas fa-arrow-down"></i>
+              </div>
+
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Registrar ingreso</p>
+                <p className="text-xs text-gray-500">
+                  Dinero que entra a tu cuenta
+                </p>
+              </div>
+            </div>
+
+            <i className="fas fa-chevron-right text-gray-400"></i>
+          </button>
+
+          {/* DEUDA */}
+          <button
+            onClick={() => {
+              setAccion("deuda");
+              setStep(2);
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-[#2c295a]/10 text-[#2c295a]">
+                <i className="fas fa-file-invoice-dollar"></i>
+              </div>
+
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Crear deuda</p>
+                <p className="text-xs text-gray-500">
+                  Pagos pendientes o por cobrar
+                </p>
+              </div>
+            </div>
+
+            <i className="fas fa-chevron-right text-gray-400"></i>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* =========================
+   * STEP 2 – TRANSACCIÓN
+   ========================= */
+  if (step === 2 && accion !== "deuda") {
+    return (
+      <div className="space-y-4">
+        <button
+          onClick={() => setStep(1)}
+          className="flex items-center gap-2 text-sm text-[#2c295a] font-medium hover:opacity-80 transition"
+        >
+          <i className="fas fa-arrow-left text-xs"></i>
+          Volver
+        </button>
+
+        {message && (
+          <div
+            className={`text-sm px-4 py-2 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+          <input
+            type="number"
+            placeholder="Monto"
+            value={monto}
+            onChange={(e) => setMonto(e.target.value)}
+            className={inputBase}
+          />
+
+          <DropdownSelect
+            placeholder="Selecciona una categoría"
+            items={categorias}
+            value={categoriaId}
+            onChange={setCategoriaId}
+            loading={categoriasLoading}
+            getKey={(c) => c.categoria_id}
+            getLabel={(c) => c.nombre}
+          />
+
+          <input
+            type="text"
+            placeholder="Descripción"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            className={inputBase}
+          />
+
+          {/* Asociar a deuda (opcional) */}
+          
+          <DropdownSelect
+            placeholder={
+              tipo === "Ingreso"
+                ? "Asociar a deuda por cobrar (opcional)"
+                : "Asociar a deuda por pagar (opcional)"
+            }
+            items={deudasFiltradas}
+            value={deudaId}
+            onChange={setDeudaId}
+            loading={deudasLoading}
+            allowEmpty
+            emptyLabel="Sin deuda"
+            getKey={(d) => d.deuda_id}
+            getLabel={(d) => d.nombre_deuda}
+          />
+        
+
+          {/* Estado SOLO si es Egreso */}
+          {tipo === "Egreso" && (
             <div className="flex gap-2">
-              {["Ingreso", "Egreso"].map((t) => (
+              {["pagado", "pendiente"].map((e) => (
                 <button
-                  key={t}
-                  onClick={() => {
-                    setTipo(t);
-                    if (t === "Ingreso") setEstado("pagado");
-                  }}
+                  key={e}
+                  onClick={() => setEstado(e)}
                   className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                    tipo === t
-                      ? "bg-[#2c295a] text-white"
-                      : "bg-gray-100 text-gray-600"
+                    estado === e
+                      ? e === "pagado"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-500"
                   }`}
                 >
-                  {t}
+                  {e === "pagado" ? "Pagado ahora" : "Pagar después"}
                 </button>
               ))}
             </div>
+          )}
 
-            <input
-              type="number"
-              placeholder="Monto"
-              value={monto}
-              onChange={(e) => setMonto(e.target.value)}
-              className={inputBase}
-            />
-
+          {/* Deuda SOLO si es Egreso y Pendiente */}
+          {tipo === "Egreso" && estado === "pendiente" && (
             <DropdownSelect
-              placeholder="Selecciona una categoría"
-              items={categorias}
-              value={categoriaId}
-              onChange={setCategoriaId}
-              loading={categoriasLoading}
-              getKey={(c) => c.categoria_id}
-              getLabel={(c) => c.nombre}
-            />
-
-            <input
-              type="text"
-              placeholder="Descripción"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              className={inputBase}
-            />
-
-            <DropdownSelect
-              placeholder="Selecciona una deuda (opcional)"
+              placeholder="Asociar a deuda (opcional)"
               items={deudasFiltradas}
               value={deudaId}
               onChange={setDeudaId}
@@ -171,99 +305,92 @@ export default function NewTransaction() {
               getKey={(d) => d.deuda_id}
               getLabel={(d) => d.nombre_deuda}
             />
+          )}
+        </div>
 
-            {!isIngreso && (
-              <div className="flex gap-2">
-                {["pagado", "pendiente"].map((e) => (
-                  <button
-                    key={e}
-                    onClick={() => setEstado(e)}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                      estado === e
-                        ? e === "pagado"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-            )}
+        {/* Preview */}
+        <TransactionCard
+          tx={{
+            descripcion: descripcion || "Descripción",
+            categoria: "Categoría",
+            fecha: new Date().toISOString().slice(0, 10),
+            tipo,
+            monto: monto || 0,
+            estado,
+          }}
+        />
+
+        <button
+          onClick={submit}
+          disabled={loading}
+          className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
+        >
+          {loading ? "Guardando..." : "Guardar"}
+        </button>
+      </div>
+    );
+  }
+
+  /* =========================
+   * STEP 2 – DEUDA
+   ========================= */
+  if (step === 2 && accion === "deuda") {
+    return (
+      <div className="space-y-4">
+        <button
+          onClick={() => setStep(1)}
+          className="flex items-center gap-2 text-sm text-[#2c295a] font-medium hover:opacity-80 transition"
+        >
+          <i className="fas fa-arrow-left text-xs"></i>
+          Volver
+        </button>
+
+        {deudaMessage && (
+          <div
+            className={`text-sm px-4 py-2 rounded-lg ${
+              deudaMessage.type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {deudaMessage.text}
+          </div>
+        )}
+
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+          <div className="flex gap-2">
+            {["Pagar", "Cobrar"].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTipoDeuda(t)}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                  tipoDeuda === t
+                    ? "bg-[#2c295a] text-white"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           </div>
 
-          <TransactionCard
-            tx={{
-              descripcion: descripcion || "Descripción",
-              categoria: "Categoría",
-              fecha: new Date().toISOString().slice(0, 10),
-              tipo,
-              monto: monto || 0,
-              estado,
-            }}
+          <input
+            placeholder="Nombre de la deuda"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            className={inputBase}
           />
 
-          <button
-            onClick={submit}
-            disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
-          >
-            {loading ? "Guardando..." : "Guardar"}
-          </button>
-        </>
-      )}
+          <input
+            type="number"
+            placeholder="Monto total"
+            value={montoTotal}
+            onChange={(e) => setMontoTotal(e.target.value)}
+            className={inputBase}
+          />
 
-      {/* =============================
-          TAB DEUDA 
-      ============================= */}
-      {activeTab === "deuda" && (
-        <>
-          {deudaMessage && (
-            <div
-              className={`text-sm px-4 py-2 rounded-lg ${
-                deudaMessage.type === "success"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {deudaMessage.text}
-            </div>
-          )}
-
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
-            <div className="flex gap-2">
-              {["Pagar", "Cobrar"].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTipoDeuda(t)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                    tipoDeuda === t
-                      ? "bg-[#2c295a] text-white"
-                      : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-
-            <input
-              placeholder="Nombre de la deuda"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              className={inputBase}
-            />
-
-            <input
-              type="number"
-              placeholder="Monto total"
-              value={montoTotal}
-              onChange={(e) => setMontoTotal(e.target.value)}
-              className={inputBase}
-            />
-
-            {tipoDeuda === "Pagar" && (
+          {tipoDeuda === "Pagar" && (
+            <>
               <input
                 type="number"
                 placeholder="Cuota mensual (opcional)"
@@ -271,27 +398,37 @@ export default function NewTransaction() {
                 onChange={(e) => setCuotaMensual(e.target.value)}
                 className={inputBase}
               />
-            )}
 
-            {tipoDeuda === "Pagar" && (
-              <input
-                type="date"
-                value={fechaVencimiento}
-                onChange={(e) => setFechaVencimiento(e.target.value)}
-                className={inputBase}
-              />
-            )}
-          </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">
+                  Fecha de vencimiento
+                </label>
 
-          <button
-            onClick={submitDeuda}
-            disabled={deudaLoading}
-            className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
-          >
-            {deudaLoading ? "Guardando..." : "Crear deuda"}
-          </button>
-        </>
-      )}
-    </div>
-  );
+                <input
+                  type="date"
+                  value={fechaVencimiento}
+                  onChange={(e) => setFechaVencimiento(e.target.value)}
+                  className={inputBase}
+                />
+
+                <p className="text-xs text-gray-400">
+                  Fecha límite en la que debes pagar esta deuda
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+
+        <button
+          onClick={submitDeuda}
+          disabled={deudaLoading}
+          className="w-full py-3 rounded-xl font-semibold text-white bg-[#2c295a]"
+        >
+          {deudaLoading ? "Guardando..." : "Crear deuda"}
+        </button>
+      </div>
+    );
+  }
+
+  return null;
 }
