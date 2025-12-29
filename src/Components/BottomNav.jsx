@@ -19,10 +19,11 @@ export default function BottomNav() {
       <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200">
         <ul className="flex justify-between px-3 py-2 items-center">
 
-          {/* TAB IZQUIERDO */}
+          {/* TAB INICIO*/}
           <li className="flex-1">
             <NavLink
               to={tabs[0].to}
+              end
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
                   isActive
@@ -42,6 +43,7 @@ export default function BottomNav() {
           <li className="flex-1">
             <NavLink
               to={tabs[1].to}
+              end
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
                   isActive
@@ -57,7 +59,7 @@ export default function BottomNav() {
             </NavLink>
           </li>
 
-          {/*BOTÓN CENTRAL */}
+          {/* BOTÓN CENTRAL */}
           <li className="flex-1 flex justify-center -mt-8">
             <NavLink to="/app/transacciones/nueva">
               <div
@@ -77,6 +79,7 @@ export default function BottomNav() {
           <li className="flex-1">
             <NavLink
               to={tabs[2].to}
+              end
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
                   isActive
@@ -96,6 +99,7 @@ export default function BottomNav() {
           <li className="flex-1">
             <NavLink
               to={tabs[3].to}
+              end
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
                   isActive
@@ -110,6 +114,7 @@ export default function BottomNav() {
               </span>
             </NavLink>
           </li>
+
         </ul>
       </div>
     </nav>
