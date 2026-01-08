@@ -51,5 +51,4 @@ Frontend de **FinanceApp**, una aplicación web de **finanzas personales**, desa
 
 ---
 
-## 📂 Estructura del proyecto
 
