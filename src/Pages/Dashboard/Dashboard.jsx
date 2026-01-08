@@ -45,7 +45,7 @@ export default function Dashboard() {
       {/* ===== RESUMEN ===== */}
       <div className="grid grid-cols-2 gap-4">
         <SummaryCard
-          title="Ingresos"
+          title="Ingresos mes actual"
           amount={totalIngresos}
           icon="fas fa-arrow-down"
           color="text-green-600"
@@ -53,7 +53,7 @@ export default function Dashboard() {
         />
 
         <SummaryCard
-          title="Egresos"
+          title="Egresos mes actual"
           amount={totalEgresos}
           icon="fas fa-arrow-up"
           color="text-red-500"

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useTransacciones from "./useTransacciones";
 import TransactionCard from "../../Components/TransactionCard";
+import SummaryCard from "../../Components/SummaryCard";
 
 export default function Movimientos() {
   const { data, loading, error, refetch } = useTransacciones();
@@ -8,9 +9,7 @@ export default function Movimientos() {
 
   if (loading) {
     return (
-      <p className="text-center text-gray-500 mt-10">
-        Cargando movimientos...
-      </p>
+      <p className="text-center text-gray-500 mt-10">Cargando movimientos...</p>
     );
   }
 
@@ -24,20 +23,36 @@ export default function Movimientos() {
 
   const ingresos = data.data.ingresos;
   const egresos = data.data.egresos;
+  const totalIngresosMonto = Number(data.totales.ingresos_monto || 0);
+  const totalEgresosMonto = Number(data.totales.egresos_monto || 0);
 
-  const list =
-    activeTab === "ingresos" ? ingresos : egresos;
+  const list = activeTab === "ingresos" ? ingresos : egresos;
 
   return (
     <div className="space-y-6">
       {/* ===== HEADER ===== */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800">
-          Movimientos
-        </h2>
-        <p className="text-sm text-gray-500">
-          Historial completo
-        </p>
+        <h2 className="text-lg font-semibold text-gray-800">Movimientos</h2>
+        <p className="text-sm text-gray-500">Historial completo</p>
+      </div>
+
+      {/* ===== RESUMEN HISTÓRICO ===== */}
+      <div className="grid grid-cols-2 gap-4">
+        <SummaryCard
+          title="Ingresos"
+          amount={totalIngresosMonto}
+          icon="fas fa-arrow-down"
+          color="text-green-600"
+          bg="bg-green-100"
+        />
+
+        <SummaryCard
+          title="Egresos"
+          amount={totalEgresosMonto}
+          icon="fas fa-arrow-up"
+          color="text-red-500"
+          bg="bg-red-100"
+        />
       </div>
 
       {/* ===== TABS ===== */}
@@ -70,12 +85,7 @@ export default function Movimientos() {
         {list
           .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
           .map((tx) => (
-            <TransactionCard
-              key={tx.transaccion_id}
-              tx={tx}
-              onPaid={refetch}
-
-            />
+            <TransactionCard key={tx.transaccion_id} tx={tx} onPaid={refetch} />
           ))}
       </div>
     </div>
