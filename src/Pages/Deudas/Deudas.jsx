@@ -18,8 +18,8 @@ export default function Deudas() {
   const porcentaje =
     resumen.inicial > 0
       ? Math.round(
-          ((resumen.inicial - resumen.pendiente) / resumen.inicial) * 100
-        )
+        ((resumen.inicial - resumen.pendiente) / resumen.inicial) * 100
+      )
       : 0;
 
   return (
@@ -38,25 +38,22 @@ export default function Deudas() {
           </div>
 
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center ${
-              tab === "pagar"
+            className={`w-9 h-9 rounded-full flex items-center justify-center ${tab === "pagar"
                 ? "bg-red-100 text-red-500"
                 : "bg-green-100 text-green-600"
-            }`}
+              }`}
           >
             <i
-              className={`fas ${
-                tab === "pagar" ? "fa-credit-card" : "fa-hand-holding-usd"
-              }`}
+              className={`fas ${tab === "pagar" ? "fa-credit-card" : "fa-hand-holding-usd"
+                }`}
             />
           </div>
         </div>
 
         {/* Monto */}
         <p
-          className={`text-2xl font-bold leading-none ${
-            tab === "pagar" ? "text-red-500" : "text-green-600"
-          }`}
+          className={`text-2xl font-bold leading-none tabular-nums ${tab === "pagar" ? "text-red-500" : "text-green-600"
+            }`}
         >
           ${Number(resumen.pendiente).toFixed(2)}
         </p>
@@ -81,11 +78,11 @@ export default function Deudas() {
           <p className="text-[11px] text-gray-400">
             {tab === "pagar"
               ? `Pagado $${resumen.pagado.toFixed(
-                  2
-                )} de $${resumen.inicial.toFixed(2)}`
+                2
+              )} de $${resumen.inicial.toFixed(2)}`
               : `Recibido $${resumen.recibido.toFixed(
-                  2
-                )} de $${resumen.inicial.toFixed(2)}`}
+                2
+              )} de $${resumen.inicial.toFixed(2)}`}
           </p>
         </div>
       </div>
@@ -94,20 +91,18 @@ export default function Deudas() {
       <div className="flex bg-gray-100 rounded-xl p-1">
         <button
           onClick={() => setTab("pagar")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-            tab === "pagar" ? "bg-[#2c295a] shadow text-white" : "text-gray-500"
-          }`}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${tab === "pagar" ? "bg-[#2c295a] shadow text-white" : "text-gray-500"
+            }`}
         >
           Pagar ({pagar.length})
         </button>
 
         <button
           onClick={() => setTab("cobrar")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-            tab === "cobrar"
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${tab === "cobrar"
               ? "bg-[#2c295a] shadow text-white"
               : "text-gray-500"
-          }`}
+            }`}
         >
           Cobrar ({cobrar.length})
         </button>

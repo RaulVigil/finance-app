@@ -19,7 +19,7 @@ export default function SummaryCard({
       hover:shadow-md
     ">
       <div className="flex items-center justify-between">
-        
+
         {/* Texto */}
         <div>
           <p className="text-sm text-gray-500">
@@ -27,7 +27,8 @@ export default function SummaryCard({
           </p>
 
           {/* Monto (semántico) */}
-          <p className={`text-2xl font-bold ${color}`}>
+          {/* Monto (semántico) */}
+          <p className={`text-2xl font-bold tabular-nums ${color}`}>
             ${Number(amount).toFixed(2)}
           </p>
         </div>

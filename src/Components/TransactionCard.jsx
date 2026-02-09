@@ -42,9 +42,8 @@ export default function TransactionCard({ tx, onPaid }) {
 
       <div className="text-right space-y-1">
         <p
-          className={`font-bold ${
-            isIngreso ? "text-green-600" : "text-red-500"
-          }`}
+          className={`font-bold tabular-nums ${isIngreso ? "text-green-600" : "text-red-500"
+            }`}
         >
           {isIngreso ? "+" : "-"}${Number(tx.monto).toFixed(2)}
         </p>

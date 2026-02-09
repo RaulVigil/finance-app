@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: "Plus Jakarta Sans", "sans-serif";
   --font-font-custom: "Satoshi", "sans-serif";
   --breakpoint-movil: 767px;
   --breakpoint-tablet: 768px;
   --color-redglobal: #F1230D;
   --gradient-orange-yellow: linear-gradient(90deg, #F97400 4%, #FFD430 92%);
   /* ... */
+}
+
+body {
+  font-family: var(--font-sans);
 }
 
 .slick-prev:before {

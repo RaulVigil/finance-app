@@ -50,7 +50,7 @@ export default function DeudaCard({ deuda }) {
             </div>
           )}
 
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 tabular-nums">
             Cuota ${Number(deuda.cuota_mensual).toFixed(2)}
           </p>
         </div>
@@ -121,9 +121,12 @@ export default function DeudaCard({ deuda }) {
             </div>
           )}
 
-          <div className="text-xs text-gray-500 mt-2">
-            Monto inicial: $
-            {Number(deuda.monto_total_inicial).toFixed(2)}
+          <div className="text-xs text-gray-500 mt-2 flex items-center gap-2">
+            <i className="fas fa-coins text-gray-400"></i>
+            <span className="tabular-nums">
+              Monto inicial: $
+              {Number(deuda.monto_total_inicial).toFixed(2)}
+            </span>
           </div>
 
           {deuda.transacciones.length === 0 ? (

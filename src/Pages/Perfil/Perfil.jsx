@@ -33,7 +33,7 @@ export default function Perfil() {
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-500">Saldo disponible</p>
-            <p className="text-2xl font-bold text-gray-800">
+            <p className="text-2xl font-bold text-gray-800 tabular-nums">
               ${Number(saldoActual).toFixed(2)}
             </p>
           </div>

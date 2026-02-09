@@ -29,9 +29,8 @@ export default function TransactionMiniRow({ tx }) {
       </div>
 
       <p
-        className={`text-sm font-semibold ${
-          isIngreso ? "text-green-600" : "text-red-500"
-        }`}
+        className={`text-sm font-semibold tabular-nums ${isIngreso ? "text-green-600" : "text-red-500"
+          }`}
       >
         {isIngreso ? "+" : "-"}${Number(tx.monto).toFixed(2)}
       </p>

@@ -37,7 +37,7 @@ export default function Dashboard() {
       {/* ===== SALDO ===== */}
       <div className="bg-[#2c295a] rounded-2xl p-6 shadow-lg text-white">
         <p className="text-sm opacity-80">Saldo actual</p>
-        <p className="text-3xl font-bold mt-1">
+        <p className="text-3xl font-bold mt-1 tabular-nums">
           ${Number(data.saldo_actual).toFixed(2)}
         </p>
       </div>
@@ -69,22 +69,20 @@ export default function Dashboard() {
         <div className="flex bg-gray-100 rounded-xl p-1">
           <button
             onClick={() => setActiveTab("ingresos")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-              activeTab === "ingresos"
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${activeTab === "ingresos"
                 ? "bg-[#2c295a] shadow text-white"
                 : "text-gray-500"
-            }`}
+              }`}
           >
             Ingresos ({ingresos.length})
           </button>
 
           <button
             onClick={() => setActiveTab("egresos")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
-              activeTab === "egresos"
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${activeTab === "egresos"
                 ? "bg-[#2c295a] shadow text-white"
                 : "text-gray-500"
-            }`}
+              }`}
           >
             Egresos ({egresos.length})
           </button>
@@ -95,7 +93,7 @@ export default function Dashboard() {
           {transaccionesMostradas
             .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
             .map((tx) => (
-              <TransactionCard key={tx.transaccion_id} tx={tx}  onPaid={refetch}/>
+              <TransactionCard key={tx.transaccion_id} tx={tx} onPaid={refetch} />
             ))}
         </div>
       </div>
