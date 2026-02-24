@@ -12,27 +12,11 @@ export default function DeudaCard({ deuda }) {
   const pagado = total - pendiente;
   const porcentaje = total > 0 ? (pagado / total) * 100 : 0;
 
-  // Determine color based on progress
-  let progressColor = "bg-[#2c295a]"; // Default/Middle
-  let badgeColor = "bg-blue-100 text-blue-800";
-
-  if (porcentaje < 25) {
-    progressColor = "bg-red-500";
-    badgeColor = "bg-red-100 text-red-800";
-  } else if (porcentaje > 75) {
-    progressColor = "bg-green-500";
-    badgeColor = "bg-green-100 text-green-800";
-  } else {
-    progressColor = "bg-yellow-500"; // Amber/Yellow for middle
-    badgeColor = "bg-yellow-100 text-yellow-800";
-  }
-
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-
+    <div className="bg-white rounded-xl shadow-sm border border-gray-50 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className={`w-full p-4 flex justify-between items-center transition ${isPagada ? "opacity-70" : ""
+        className={`w-full p-4 flex justify-between items-center transition ${isPagada ? "opacity-60" : ""
           }`}
       >
         <div className="text-left w-full mr-4">
@@ -40,17 +24,17 @@ export default function DeudaCard({ deuda }) {
             {deuda.nombre_deuda}
           </p>
 
-          {/* Progress Bar for Debt (Pagar) only */}
+          {/* Progress Bar - Consistent with Summary */}
           {!isCobrar && !isPagada && (
-            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden my-1">
+            <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden my-2">
               <div
-                className={`h-full ${progressColor} transition-all duration-500 ease-out`}
+                className="h-full bg-[#2c295a] rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${porcentaje}%` }}
               ></div>
             </div>
           )}
 
-          <p className="text-xs text-gray-500 tabular-nums">
+          <p className="text-[11px] text-gray-400 tabular-nums">
             Cuota ${Number(deuda.cuota_mensual).toFixed(2)}
           </p>
         </div>
@@ -58,13 +42,13 @@ export default function DeudaCard({ deuda }) {
         <div className="text-right min-w-fit">
           <div className="flex items-center justify-end gap-2 mb-1">
             {!isPagada && !isCobrar && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium whitespace-nowrap ${badgeColor}`}>
+              <span className="text-[10px] text-gray-500 font-medium tabular-nums">
                 {Math.round(porcentaje)}%
               </span>
             )}
             <p
               className={`font-bold whitespace-nowrap ${isPagada
-                ? "text-gray-400"
+                ? "text-gray-300"
                 : isCobrar
                   ? "text-green-600"
                   : "text-red-500"
@@ -74,16 +58,18 @@ export default function DeudaCard({ deuda }) {
             </p>
           </div>
 
-          <span
-            className={`text-xs px-2 py-0.5 rounded-full inline-block whitespace-nowrap ${deuda.estado === "Activa"
-              ? "bg-yellow-100 text-yellow-700"
+          {/* Minimalist Status Indicator (Dot + Text) */}
+          <div className="flex items-center justify-end gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${deuda.estado === "Activa"
+              ? "bg-green-500"
               : deuda.estado === "Pagada"
-                ? "bg-gray-200 text-gray-600"
-                : "bg-green-100 text-green-700"
-              }`}
-          >
-            {deuda.estado}
-          </span>
+                ? "bg-gray-300"
+                : "bg-green-500"
+              }`} />
+            <span className="text-[10px] font-medium text-gray-500">
+              {deuda.estado}
+            </span>
+          </div>
         </div>
       </button>
 
@@ -107,12 +93,30 @@ export default function DeudaCard({ deuda }) {
                 <i className="far fa-calendar-alt mr-1"></i>
                 Fecha estimada:{" "}
                 {(() => {
-                  const meses = Math.ceil(
+                  const mesesFaltantes = Math.ceil(
                     Number(deuda.saldo_pendiente) / Number(deuda.cuota_mensual)
                   );
-                  const fecha = new Date();
-                  fecha.setMonth(fecha.getMonth() + meses);
-                  return fecha.toLocaleDateString("es-ES", {
+                  const hoy = new Date();
+
+                  // Determinar si ya pagó en el mes actual
+                  const yaPagoEsteMes = deuda.transacciones?.some((tx) => {
+                    const fechaTx = new Date(tx.fecha);
+                    return (
+                      fechaTx.getMonth() === hoy.getMonth() &&
+                      fechaTx.getFullYear() === hoy.getFullYear()
+                    );
+                  });
+
+                  // Si ya pagó, sumamos los meses faltantes. 
+                  // Si NO ha pagado, la cuota de este mes cuenta como la primera, restamos 1.
+                  const mesesAAgregar = yaPagoEsteMes
+                    ? mesesFaltantes
+                    : Math.max(0, mesesFaltantes - 1);
+
+                  const fechaFin = new Date();
+                  fechaFin.setMonth(fechaFin.getMonth() + mesesAAgregar);
+
+                  return fechaFin.toLocaleDateString("es-ES", {
                     month: "long",
                     year: "numeric",
                   });
