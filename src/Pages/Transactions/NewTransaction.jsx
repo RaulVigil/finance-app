@@ -93,6 +93,9 @@ export default function NewTransaction() {
   const isIngreso = tipo === "Ingreso";
 
   const deudasFiltradas = deudas.filter((d) => {
+    // Excluir deudas ya pagadas
+    if (d.estado === "Pagada") return false;
+
     if (tipo === "Ingreso") return d.tipo_deuda === "Cobrar";
     if (tipo === "Egreso") return d.tipo_deuda === "Pagar";
     return false;
@@ -215,11 +218,10 @@ export default function NewTransaction() {
 
         {message && (
           <div
-            className={`text-sm px-4 py-2 rounded-lg ${
-              message.type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
+            className={`text-sm px-4 py-2 rounded-lg ${message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+              }`}
           >
             {message.text}
           </div>
@@ -253,7 +255,7 @@ export default function NewTransaction() {
           />
 
           {/* Asociar a deuda (opcional) */}
-          
+
           <DropdownSelect
             placeholder={
               tipo === "Ingreso"
@@ -262,14 +264,22 @@ export default function NewTransaction() {
             }
             items={deudasFiltradas}
             value={deudaId}
-            onChange={setDeudaId}
+            onChange={(id) => {
+              setDeudaId(id);
+              if (id) {
+                const selected = deudas.find((d) => String(d.deuda_id) === String(id));
+                if (selected && Number(selected.cuota_mensual) > 0) {
+                  setMonto(selected.cuota_mensual);
+                }
+              }
+            }}
             loading={deudasLoading}
             allowEmpty
             emptyLabel="Sin deuda"
-            getKey={(d) => d.deuda_id}
             getLabel={(d) => d.nombre_deuda}
+            getKey={(d) => d.deuda_id}
           />
-        
+
 
           {/* Estado SOLO si es Egreso */}
           {tipo === "Egreso" && (
@@ -278,13 +288,12 @@ export default function NewTransaction() {
                 <button
                   key={e}
                   onClick={() => setEstado(e)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                    estado === e
-                      ? e === "pagado"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${estado === e
+                    ? e === "pagado"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                    : "bg-gray-100 text-gray-500"
+                    }`}
                 >
                   {e === "pagado" ? "Pagado ahora" : "Pagar después"}
                 </button>
@@ -292,20 +301,6 @@ export default function NewTransaction() {
             </div>
           )}
 
-          {/* Deuda SOLO si es Egreso y Pendiente */}
-          {tipo === "Egreso" && estado === "pendiente" && (
-            <DropdownSelect
-              placeholder="Asociar a deuda (opcional)"
-              items={deudasFiltradas}
-              value={deudaId}
-              onChange={setDeudaId}
-              loading={deudasLoading}
-              allowEmpty
-              emptyLabel="Sin deuda"
-              getKey={(d) => d.deuda_id}
-              getLabel={(d) => d.nombre_deuda}
-            />
-          )}
         </div>
 
         {/* Preview */}
@@ -347,11 +342,10 @@ export default function NewTransaction() {
 
         {deudaMessage && (
           <div
-            className={`text-sm px-4 py-2 rounded-lg ${
-              deudaMessage.type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
+            className={`text-sm px-4 py-2 rounded-lg ${deudaMessage.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+              }`}
           >
             {deudaMessage.text}
           </div>
@@ -363,11 +357,10 @@ export default function NewTransaction() {
               <button
                 key={t}
                 onClick={() => setTipoDeuda(t)}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-                  tipoDeuda === t
-                    ? "bg-[#2c295a] text-white"
-                    : "bg-gray-100 text-gray-600"
-                }`}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tipoDeuda === t
+                  ? "bg-[#2c295a] text-white"
+                  : "bg-gray-100 text-gray-600"
+                  }`}
               >
                 {t}
               </button>
