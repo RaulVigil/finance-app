@@ -1,13 +1,12 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/useAuthStore";
 import useMesActual from "./useMesActual";
-import TransactionCard from "../../Components/TransactionCard";
 import SummaryCard from "../../Components/SummaryCard";
+import DashboardCharts from "./DashboardCharts";
 
 export default function Dashboard() {
-  const { saldoActual } = useAuthStore();
-  const { data, loading, error, refetch } = useMesActual();
-  const [activeTab, setActiveTab] = useState("ingresos");
+  const navigate = useNavigate();
+  const { data, loading, error } = useMesActual();
 
   if (loading) {
     return (
@@ -27,16 +26,21 @@ export default function Dashboard() {
   const egresos = data.data.egresos;
 
   const totalIngresos = ingresos.reduce((acc, i) => acc + Number(i.monto), 0);
-
   const totalEgresos = egresos.reduce((acc, e) => acc + Number(e.monto), 0);
-
-  const transaccionesMostradas = activeTab === "ingresos" ? ingresos : egresos;
 
   return (
     <div className="space-y-6">
       {/* ===== SALDO ===== */}
       <div className="bg-[#2c295a] rounded-2xl p-6 shadow-lg text-white">
-        <p className="text-sm opacity-80">Saldo actual</p>
+        <div className="flex justify-between items-start">
+          <p className="text-sm opacity-80">Saldo actual</p>
+          <span
+            onClick={() => navigate("/app/movimientos")}
+            className="text-xs opacity-80 cursor-pointer hover:opacity-100 transition"
+          >
+            Ver historial →
+          </span>
+        </div>
         <p className="text-3xl font-bold mt-1 tabular-nums">
           ${Number(data.saldo_actual).toFixed(2)}
         </p>
@@ -61,42 +65,8 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* ===== MOVIMIENTOS ===== */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-gray-800">Movimientos del mes</h3>
-
-        {/* Tabs */}
-        <div className="flex bg-gray-100 rounded-xl p-1">
-          <button
-            onClick={() => setActiveTab("ingresos")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${activeTab === "ingresos"
-                ? "bg-[#2c295a] shadow text-white"
-                : "text-gray-500"
-              }`}
-          >
-            Ingresos ({ingresos.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab("egresos")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${activeTab === "egresos"
-                ? "bg-[#2c295a] shadow text-white"
-                : "text-gray-500"
-              }`}
-          >
-            Egresos ({egresos.length})
-          </button>
-        </div>
-
-        {/* Lista */}
-        <div className="space-y-2 max-h-[420px] overflow-y-auto pr-1">
-          {transaccionesMostradas
-            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-            .map((tx) => (
-              <TransactionCard key={tx.transaccion_id} tx={tx} onPaid={refetch} />
-            ))}
-        </div>
-      </div>
+      {/* VISTA ESTADÍSTICAS */}
+      <DashboardCharts />
     </div>
   );
 }
