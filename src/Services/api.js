@@ -99,31 +99,47 @@ if (token) {
   });
 };
 
-const put = (url = "", body = {}, headers = {}) =>
-  axios.put(readUrl(url), body, {
+const put = (url = "", body = {}, headers = {}) => {
+  const token = getToken();
+  if (token) {
+    headers.Authorization = "Bearer " + token;
+  }
+  return axios.put(readUrl(url), body, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "access-control-allow-credentials": "true",
-      "access-control-allow-methods": "*",
-
       ...headers,
     },
   });
+};
 
-const del = (url = "", headers = {}) =>
-  axios.delete(readUrl(url), {
+const patch = (url = "", body = {}, headers = {}) => {
+  const token = getToken();
+  if (token) {
+    headers.Authorization = "Bearer " + token;
+  }
+  return axios.patch(readUrl(url), JSON.stringify(body), {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "access-control-allow-credentials": "true",
-      "access-control-allow-methods": "*",
-
       ...headers,
     },
   });
+};
+
+const del = (url = "", headers = {}) => {
+  const token = getToken();
+  if (token) {
+    headers.Authorization = "Bearer " + token;
+  }
+  return axios.delete(readUrl(url), {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...headers,
+    },
+  });
+};
 
 
 
@@ -131,6 +147,7 @@ const Api = {
   get,
   post,
   postJson,
+  patch,
   put,
   postUpload,
   delete: del,

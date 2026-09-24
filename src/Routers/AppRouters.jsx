@@ -8,6 +8,8 @@ import Deudas from "../Pages/Deudas/Deudas";
 import Perfil from "../Pages/Perfil/Perfil";
 import NewTransaction from "../Pages/Transactions/NewTransaction";
 import Registro from "../Pages/Registro/Registro";
+import GastosFijos from "../Pages/GastosFijos/GastosFijos";
+import Tarjetas from "../Pages/Tarjetas/Tarjetas";
 
 const AppRouter = () => {
   return (
@@ -23,6 +25,8 @@ const AppRouter = () => {
         <Route path="deudas" element={<Deudas />} />
         <Route path="perfil" element={<Perfil />} />
         <Route path="transacciones/nueva" element={<NewTransaction />} />
+        <Route path="gastos-fijos" element={<GastosFijos />} />
+        <Route path="tarjetas" element={<Tarjetas />} />
       </Route>
     </Routes>
   );

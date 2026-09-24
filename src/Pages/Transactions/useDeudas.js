@@ -5,20 +5,20 @@ export default function useDeudas() {
   const [deudas, setDeudas] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDeudas = async () => {
-      try {
-        const res = await Api.get("deudaslist");
-        setDeudas(res?.data?.data || []);
-      } catch {
-        setDeudas([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchDeudas = async () => {
+    try {
+      const res = await Api.get("deudaslist");
+      setDeudas(res?.data?.data || []);
+    } catch {
+      setDeudas([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchDeudas();
   }, []);
 
-  return { deudas, loading };
+  return { deudas, loading, refetch: fetchDeudas };
 }

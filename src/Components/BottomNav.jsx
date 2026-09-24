@@ -2,14 +2,33 @@ import { NavLink, useLocation } from "react-router-dom";
 
 const tabs = [
   { to: "/app", icon: "fas fa-house", label: "Inicio" },
-  {
-    to: "/app/movimientos",
-    icon: "fas fa-arrow-right-arrow-left",
-    label: "Movs",
-  },
-  { to: "/app/deudas", icon: "fas fa-credit-card", label: "Deudas" },
+  { to: "/app/movimientos", icon: "fas fa-arrow-right-arrow-left", label: "Movs" },
+  { to: "/app/gastos-fijos", icon: "fas fa-list-check", label: "Gastos" },
+  { to: "/app/deudas", icon: "fas fa-file-invoice-dollar", label: "Deudas" },
+  { to: "/app/tarjetas", icon: "fas fa-credit-card", label: "Tarjetas" },
   { to: "/app/perfil", icon: "fas fa-user", label: "Perfil" },
 ];
+
+function NavItem({ tab }) {
+  return (
+    <li className="flex-1">
+      <NavLink
+        to={tab.to}
+        end={tab.to === "/app"}
+        className={({ isActive }) =>
+          `flex flex-col items-center gap-0.5 py-2 rounded-xl transition-all duration-300 ${
+            isActive
+              ? "text-[#2c295a] bg-[#eceaff]"
+              : "text-gray-400 hover:text-gray-600"
+          }`
+        }
+      >
+        <i className={`${tab.icon} text-base`} />
+        <span className="text-[10px] font-medium">{tab.label}</span>
+      </NavLink>
+    </li>
+  );
+}
 
 export default function BottomNav() {
   const location = useLocation();
@@ -17,103 +36,32 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-3 left-3 right-3 z-50">
       <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200">
-        <ul className="flex justify-between px-3 py-2 items-center">
+        <ul className="flex justify-between px-1 py-1.5 items-center">
 
-          {/* TAB INICIO*/}
-          <li className="flex-1">
-            <NavLink
-              to={tabs[0].to}
-              end
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
-                  isActive
-                    ? "text-[#2c295a] bg-[#eceaff]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`
-              }
-            >
-              <i className={`${tabs[0].icon} text-lg`} />
-              <span className="text-[11px] font-medium">
-                {tabs[0].label}
-              </span>
-            </NavLink>
-          </li>
-
-          {/* TAB MOVS */}
-          <li className="flex-1">
-            <NavLink
-              to={tabs[1].to}
-              end
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
-                  isActive
-                    ? "text-[#2c295a] bg-[#eceaff]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`
-              }
-            >
-              <i className={`${tabs[1].icon} text-lg`} />
-              <span className="text-[11px] font-medium">
-                {tabs[1].label}
-              </span>
-            </NavLink>
-          </li>
+          {/* Tabs izquierdos */}
+          <NavItem tab={tabs[0]} />
+          <NavItem tab={tabs[1]} />
 
           {/* BOTÓN CENTRAL */}
-          <li className="flex-1 flex justify-center -mt-8">
+          <li className="flex-1 flex justify-center -mt-7">
             <NavLink to="/app/transacciones/nueva">
               <div
-                className={`w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all active:scale-95
-                  ${
-                    location.pathname === "/app/transacciones/nueva"
-                      ? "bg-[#2c295a]"
-                      : "bg-[#2c295a]"
-                  }`}
+                className={`w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all active:scale-95 ${
+                  location.pathname === "/app/transacciones/nueva"
+                    ? "bg-[#3d3980]"
+                    : "bg-[#2c295a]"
+                }`}
               >
-                <i className="fas fa-plus text-white text-xl" />
+                <i className="fas fa-plus text-white text-lg" />
               </div>
             </NavLink>
           </li>
 
-          {/* TAB DEUDAS */}
-          <li className="flex-1">
-            <NavLink
-              to={tabs[2].to}
-              end
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
-                  isActive
-                    ? "text-[#2c295a] bg-[#eceaff]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`
-              }
-            >
-              <i className={`${tabs[2].icon} text-lg`} />
-              <span className="text-[11px] font-medium">
-                {tabs[2].label}
-              </span>
-            </NavLink>
-          </li>
-
-          {/* TAB PERFIL */}
-          <li className="flex-1">
-            <NavLink
-              to={tabs[3].to}
-              end
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-300 ${
-                  isActive
-                    ? "text-[#2c295a] bg-[#eceaff]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`
-              }
-            >
-              <i className={`${tabs[3].icon} text-lg`} />
-              <span className="text-[11px] font-medium">
-                {tabs[3].label}
-              </span>
-            </NavLink>
-          </li>
+          {/* Tabs derechos */}
+          <NavItem tab={tabs[2]} />
+          <NavItem tab={tabs[3]} />
+          <NavItem tab={tabs[4]} />
+          <NavItem tab={tabs[5]} />
 
         </ul>
       </div>

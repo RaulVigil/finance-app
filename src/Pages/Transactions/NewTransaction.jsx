@@ -268,8 +268,20 @@ export default function NewTransaction() {
               setDeudaId(id);
               if (id) {
                 const selected = deudas.find((d) => String(d.deuda_id) === String(id));
-                if (selected && Number(selected.cuota_mensual) > 0) {
-                  setMonto(selected.cuota_mensual);
+                if (selected) {
+                  const cuota = Number(selected.cuota_mensual || 0);
+                  const saldo = Number(selected.saldo_pendiente || 0);
+                  if (cuota > 0) {
+                    setMonto(selected.cuota_mensual);
+                  } else if (saldo > 0) {
+                    setMonto(selected.saldo_pendiente);
+                  }
+                }
+                if (tipo === "Egreso") {
+                  const catDeuda = categorias.find(
+                    (c) => Number(c.categoria_id) === 12 || c.nombre.toLowerCase().includes("deuda")
+                  );
+                  setCategoriaId(catDeuda ? catDeuda.categoria_id : 12);
                 }
               }
             }}
