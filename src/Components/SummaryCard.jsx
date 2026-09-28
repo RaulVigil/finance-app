@@ -3,50 +3,47 @@ export default function SummaryCard({
   title,
   amount = 0,
   icon,
-  color = "text-gray-800",   // SOLO para el monto
-  bg = "bg-gray-100",        // fondo suave opcional
+  color = "text-emerald-400",
+  bg = "bg-emerald-500/10",
 }) {
   return (
     <div className="
-      bg-white
+      relative overflow-hidden
+      bg-[#13151B]/85 backdrop-blur-md
       rounded-2xl
-      p-[12px]
-      shadow-sm
-      border border-gray-100
-      transition-all
-      duration-200
+      p-4 sm:p-5
+      border border-white/[0.08] hover:border-white/[0.15]
+      shadow-[0_10px_25px_rgba(0,0,0,0.35)]
+      transition-all duration-200
       active:scale-[0.98]
-      hover:shadow-md
     ">
       <div className="flex items-center justify-between">
-
-        {/* Texto */}
-        <div>
-          <p className="text-sm text-gray-500">
+        {/* Texto y Cifra */}
+        <div className="min-w-0 pr-2">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider truncate">
             {title}
           </p>
 
-          {/* Monto (semántico) */}
-          {/* Monto (semántico) */}
-          <p className={`text-2xl font-bold tabular-nums ${color}`}>
-            ${Number(amount).toFixed(2)}
+          <p className={`text-xl sm:text-2xl font-bold tracking-tight tabular-nums mt-1 ${color}`}>
+            ${Number(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
 
-        {/* Icono (branding) */}
+        {/* Icono con contenedor glassmorphic */}
         <div
           className={`
-            w-[30px] h-[40px]
-            flex items-center justify-center
+            w-10 h-10 sm:w-11 sm:h-11
+            flex items-center justify-center shrink-0
             rounded-xl
-            bg-[#eceaff]
-            text-[#2c295a]
-            ring-1 ring-[#6b5cff]/20
+            border border-white/[0.08]
+            ${bg}
+            transition-transform duration-200
           `}
         >
-          <i className={`${icon} text-[12px]`} />
+          <i className={`${icon} text-sm sm:text-base ${color}`} />
         </div>
       </div>
     </div>
   );
 }
+

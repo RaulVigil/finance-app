@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'YogaSansWebPro';
+  src: url('/fonts/YogaSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YogaSansWebPro';
+  src: url('/fonts/YogaSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YogaSansWebPro';
+  src: url('/fonts/YogaSans-Bold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YogaSansWebPro';
+  src: url('/fonts/YogaSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YogaSansWebPro';
+  src: url('/fonts/YogaSans-Bold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Plus Jakarta Sans", "sans-serif";
-  --font-font-custom: "Satoshi", "sans-serif";
+  --font-sans: "YogaSansWebPro", Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font-font-custom: "YogaSansWebPro", Helvetica, "Helvetica Neue", Arial, sans-serif;
   --breakpoint-movil: 767px;
   --breakpoint-tablet: 768px;
   --color-redglobal: #F1230D;
@@ -11,7 +51,110 @@
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: "YogaSansWebPro", Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+@keyframes floatSlow1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(45px, -35px) scale(1.12);
+  }
+}
+
+@keyframes floatSlow2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(-40px, 35px) scale(1.08);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.18;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.08);
+  }
+}
+
+.animate-float-1 {
+  animation: floatSlow1 14s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: floatSlow2 18s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 8s ease-in-out infinite;
+}
+
+/* Detección y limpieza de autofill de Chrome/Edge */
+@keyframes onAutoFillStart {
+  from {
+    opacity: 0.99;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  animation-name: onAutoFillStart;
+  animation-duration: 0.001s;
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #212121 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Espaciado moderno para puntos de contraseña */
+input[type="password"] {
+  letter-spacing: 0.32em;
+}
+input[type="password"]::placeholder {
+  letter-spacing: normal;
+}
+
+/* Transiciones animadas entre vistas de la app */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tabPop {
+  0% {
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-tab-pop {
+  animation: tabPop 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .slick-prev:before {
@@ -132,3 +275,6 @@ button.customNextArrowGlobal.slick-arrow.slick-next.slick-arrow.slick-next {
     transform: rotate(360deg);
   }
 }
+
+/* cache bust */
+.cache-bust { display: none; }

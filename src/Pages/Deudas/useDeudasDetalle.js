@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Api from "../../Services/api";
 
 export default function useDeudasDetalle() {
   const [data, setData] = useState({ cobrar: [], pagar: [] });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await Api.get("deudas-detalle");
-        setData(res?.data?.data || { cobrar: [], pagar: [] });
-      } catch {
-        setData({ cobrar: [], pagar: [] });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetch();
+  const fetch = useCallback(async () => {
+    try {
+      const res = await Api.get("deudas-detalle");
+      setData(res?.data?.data || { cobrar: [], pagar: [] });
+    } catch {
+      setData({ cobrar: [], pagar: [] });
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   // ===== TOTALES =====
   const totalPagarInicial = data.pagar.reduce(
@@ -45,6 +45,7 @@ export default function useDeudasDetalle() {
     cobrar: data.cobrar,
     pagar: data.pagar,
     loading,
+    refetch: fetch,
     totales: {
       pagar: {
         inicial: totalPagarInicial,
@@ -59,3 +60,4 @@ export default function useDeudasDetalle() {
     },
   };
 }
+
