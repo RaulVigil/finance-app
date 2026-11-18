@@ -1,0 +1,11 @@
+.git
+.gitignore
+.vscode
+.env
+.vite
+node_modules
+dist
+dist-ssr
+*.zip
+*.log
+*.local
